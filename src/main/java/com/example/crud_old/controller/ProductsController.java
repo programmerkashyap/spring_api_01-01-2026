@@ -62,5 +62,84 @@ public class ProductsController {
         return productsRepository.findAll();
     }
 
+    @PutMapping("/products")
+    public Products update(
+            @RequestParam("id") String id,
+            @RequestParam("name") String name,
+            @RequestParam("price") String price,
+            @RequestParam("discount") String discount,
+            @RequestParam("description") String description,
+            @RequestParam(value = "picture", required = false) MultipartFile picture
+    )
+    {
+        if(picture == null)
+        {
+            // get old data first
+            Products olddata = productsRepository.findById(Long.parseLong(id)).orElse(null);
+
+            // update new data into database
+            Products p1 = new Products();
+            p1.setId(Long.parseLong(id));
+            p1.setName(name);
+            p1.setPrice(Long.parseLong(price));
+            p1.setDiscount(Long.parseLong(discount));
+            p1.setDescription(description);
+            p1.setPicture(olddata.getPicture()); // set old picture
+            return productsRepository.save(p1);
+        }
+        else
+        {
+
+            // save picture in folder
+            String folder = "uploads/";
+            String filename = System.currentTimeMillis()+"_"+picture.getOriginalFilename();
+            Path path = Paths.get(folder, filename);
+            try
+            {
+                Files.write(path, picture.getBytes());
+            }
+            catch (Exception ex)
+            {
+                log.error("Failed to Upload - "+ex.getMessage());
+            }
+
+            // save data into database
+            Products p1 = new Products();
+            p1.setId(Long.parseLong(id));
+            p1.setName(name);
+            p1.setPrice(Long.parseLong(price));
+            p1.setDiscount(Long.parseLong(discount));
+            p1.setDescription(description);
+
+            p1.setPicture(filename); // set new picture
+
+            return productsRepository.save(p1);
+
+        }
+
+    }
+
+    @DeleteMapping("/products/{id}")
+    public String delete(@PathVariable Long id)
+    {
+        Products data = productsRepository.findById(id).orElse(null);
+        if(data!=null)
+        {
+            productsRepository.deleteById(id);
+            return "Data deleted";
+        }
+        else
+        {
+            return "Data not deleted";
+        }
+
+    }
+
+
+    @GetMapping("/products/{id}")
+    public Products getsingle(@PathVariable Long id)
+    {
+        return productsRepository.findById(id).orElse(null);
+    }
 
 }
