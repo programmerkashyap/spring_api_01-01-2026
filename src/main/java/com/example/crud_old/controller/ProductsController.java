@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -54,5 +55,12 @@ public class ProductsController {
         return productsRepository.save(data);
 
     }
+
+    @GetMapping("/products")
+    public List<Products> showall()
+    {
+        return productsRepository.findAll();
+    }
+
 
 }
