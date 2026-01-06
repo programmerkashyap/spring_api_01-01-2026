@@ -2,8 +2,10 @@ package com.example.crud_old.controller;
 
 import com.example.crud_old.models.Products;
 import com.example.crud_old.repository.ProductsRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +25,8 @@ public class ProductsController {
         this.productsRepository = productsRepository;
     }
 
-    @PostMapping("/products")
+    @Operation(summary = "To Create New Product")
+    @PostMapping(value="/products", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Products create(
             @RequestParam("name") String name,
             @RequestParam("price") String price,
@@ -134,7 +137,6 @@ public class ProductsController {
         }
 
     }
-
 
     @GetMapping("/products/{id}")
     public Products getsingle(@PathVariable Long id)
