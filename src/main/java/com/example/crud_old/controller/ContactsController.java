@@ -38,6 +38,7 @@ public class ContactsController {
     @DeleteMapping("/contacts/{id}")
     public String delete(@PathVariable Long id)
     {
+
         if(contactsServices.delete(id))
         {
             return "Data Deleted";
